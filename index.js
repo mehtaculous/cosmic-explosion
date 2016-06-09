@@ -14,19 +14,19 @@
  *
  * Examples:
  * One-shot model:
- *  User: "Alexa, ask The Cosmos for a cosmic fact"
- *  Alexa: "Here's your cosmic fact: ..."
+ *  User: "Alexa, ask Space Geek for a space fact"
+ *  Alexa: "Here's your space fact: ..."
  */
 
 /**
  * App ID for the skill
  */
-var APP_ID = "amzn1.echo-sdk-ams.app.e4027ab2-480d-4aa9-a187-4fe0f41a3645";
+var APP_ID = "amzn1.echo-sdk-ams.app.73091661-da06-44c8-bfac-2ee89b9b83ca";
 
 /**
- * Array containing cosmic facts.
+ * Array containing space facts.
  */
-var THE_COSMOS = [
+var FACTS = [
     "Mercury is the closest planet to the Sun and due to its proximity it is not easily seen except during twilight. For every two orbits of the Sun, Mercury completes three rotations about its axis and up until 1965 it was thought that the same side of Mercury constantly faced the Sun. Thirteen times a century Mercury can be observed from the Earth passing across the face of the Sun in an event called a transit, the next will occur on the 9th May 2016.",
     "A year on Mercury is just 88 days long. One solar day, the time from noon to noon on the planet’s surface, on Mercury lasts the equivalent of 176 Earth days while the sidereal day, the time for 1 rotation in relation to a fixed point, lasts 59 Earth days. Mercury is nearly tidally locked to the Sun and over time this has slowed the rotation of the planet to almost match its orbit around the Sun. Mercury also has the highest orbital eccentricity of all the planets with its distance from the Sun ranging from 46 to 70 million km.",
     "Mercury is the smallest planet in the Solar System. One of five planets visible with the naked eye a, Mercury is just 4,879 Kilometres across its equator, compared with 12,742 Kilometres for the Earth.",
@@ -146,46 +146,44 @@ var THE_COSMOS = [
 var AlexaSkill = require('./AlexaSkill');
 
 /**
- * TheCosmos is a child of AlexaSkill.
+ * SpaceGeek is a child of AlexaSkill.
  * To read more about inheritance in JavaScript, see the link below.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript#Inheritance
  */
-var TheCosmos = function () {
+var Fact = function () {
     AlexaSkill.call(this, APP_ID);
 };
 
 // Extend AlexaSkill
-TheCosmos.prototype = Object.create(AlexaSkill.prototype);
-TheCosmos.prototype.constructor = TheCosmos;
+Fact.prototype = Object.create(AlexaSkill.prototype);
+Fact.prototype.constructor = Fact;
 
-TheCosmos.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
-    console.log("TheCosmos onSessionStarted requestId: " + sessionStartedRequest.requestId
-        + ", sessionId: " + session.sessionId);
+Fact.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
+    //console.log("onSessionStarted requestId: " + sessionStartedRequest.requestId + ", sessionId: " + session.sessionId);
     // any initialization logic goes here
 };
 
-TheCosmos.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
-    console.log("TheCosmos onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
+Fact.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
+    //console.log("onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
     handleNewFactRequest(response);
 };
 
 /**
  * Overridden to show that a subclass can override this function to teardown session state.
  */
-TheCosmos.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
-    console.log("TheCosmos onSessionEnded requestId: " + sessionEndedRequest.requestId
-        + ", sessionId: " + session.sessionId);
+Fact.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
+    //console.log("onSessionEnded requestId: " + sessionEndedRequest.requestId + ", sessionId: " + session.sessionId);
     // any cleanup logic goes here
 };
 
-TheCosmos.prototype.intentHandlers = {
+Fact.prototype.intentHandlers = {
     "GetNewFactIntent": function (intent, session, response) {
         handleNewFactRequest(response);
     },
 
     "AMAZON.HelpIntent": function (intent, session, response) {
-        response.ask("You can ask The Cosmos tell me a cosmic fact, or, you can say exit... What can I help you with?", "What can I help you with?");
+        response.ask("You can say tell me a cosmic fact, or, you can say exit... What can I help you with?", "What can I help you with?");
     },
 
     "AMAZON.StopIntent": function (intent, session, response) {
@@ -203,19 +201,20 @@ TheCosmos.prototype.intentHandlers = {
  * Gets a random new fact from the list and returns to the user.
  */
 function handleNewFactRequest(response) {
-    // Get a random cosmic fact from the cosmic facts list
-    var factIndex = Math.floor(Math.random() * THE_COSMOS.length);
-    var fact = THE_COSMOS[factIndex];
+    // Get a random space fact from the space facts list
+    var factIndex = Math.floor(Math.random() * FACTS.length);
+    var randomFact = FACTS[factIndex];
 
     // Create speech output
-    var speechOutput = "Here's your cosmic fact: " + fact;
-
-    response.tellWithCard(speechOutput, "TheCosmos", speechOutput);
+    var speechOutput = "Here's your cosmic fact: " + randomFact;
+    var cardTitle = "Your Cosmic Fact";
+    response.tellWithCard(speechOutput, cardTitle, speechOutput);
 }
 
 // Create the handler that responds to the Alexa Request.
 exports.handler = function (event, context) {
-    // Create an instance of the TheCosmos skill.
-    var theCosmos = new TheCosmos();
-    theCosmos.execute(event, context);
+    // Create an instance of the SpaceGeek skill.
+    var fact = new Fact();
+    fact.execute(event, context);
 };
+
